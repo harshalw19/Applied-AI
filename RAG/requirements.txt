@@ -1,0 +1,9 @@
+langchain
+langchain-openai
+langchain-chroma
+langchain-huggingface
+langchain-community
+pypdf
+sentence-transformers
+gradio
+python-dotenv
