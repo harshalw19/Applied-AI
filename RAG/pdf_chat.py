@@ -5,11 +5,13 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
+import os
 
 def build_index(pdf_path):
     pages    = PyPDFLoader(pdf_path).load()                    # ① read all pages
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
     chunks   = splitter.split_documents(pages)                 # ② chunk them
+    print(f"Split into {len(chunks)} chunks 🎉")
     embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     db       = Chroma.from_documents(chunks, embedder)         # ③ in-memory store
     return db
@@ -20,7 +22,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 load_dotenv()
 
-model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+model = ChatOpenAI(api_key=os.getenv('GROQ_API_KEY'), base_url="https://api.groq.com/openai/v1", model="openai/gpt-oss-120b", temperature=0.3)
 
 prompt = ChatPromptTemplate.from_template("""
 You are a helpful PDF assistant. Answer the question using ONLY the context below.

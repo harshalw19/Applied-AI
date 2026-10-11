@@ -1,4 +1,7 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+# from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+from langchain_text_splitters import CharacterTextSplitter
+
 dummy_document = """# Bengaluru Overview
 
 ## Tech Industry
@@ -12,15 +15,28 @@ Bengaluru's food scene is legendary. South Indian classics like masala dosa and 
 
 
 #importing file 
-with open("/home/harshalwarukar/Desktop/Applied-AI/Langchain/summarizer_langchain.py", "r") as file:
-    your_long_document = file.read()
-    #rint(your_long_document)  # print first 500 chars to check
+# with open("/home/harshalwarukar/Desktop/Applied-AI/Langchain/summarizer_langchain.py", "r") as file:
+#     your_long_document = file.read()
+#     #rint(your_long_document)  # print first 500 chars to check
 
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=80,        # aim for ~800 chars per chunk
-    chunk_overlap=10,     # adjacent chunks share 100 chars (context glue)
+# splitter = FixedCharacterTextSplitter(
+#     chunk_size=80,        # aim for ~800 chars per chunk
+#     chunk_overlap=10,     # adjacent chunks share 100 chars (context glue)
+# )
+
+
+text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
+    encoding_name="cl100k_base", chunk_size=8, chunk_overlap=2
 )
+texts = text_splitter.split_text(dummy_document)
 
-chunks = splitter.split_text(your_long_document)
-print(len(chunks))    # → e.g. 47 chunks ready to embed
-print(chunks)
+print(texts)
+print(len(texts))  # → e.g. 47 chunks ready to embed
+print(len(texts[0]))  # → e.g. 800 chars in first chunk
+
+
+# chunks = splitter.split_text(dummy_document)
+# print(len(chunks))    # → e.g. 47 chunks ready to embed
+# print(len(chunks[0]))
+
+
