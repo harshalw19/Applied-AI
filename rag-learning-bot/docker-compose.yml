@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    container_name: scalergpt-app
+    ports:
+      - "8000:8000"          # your Mac's 8000 -> app's 8000
+    env_file: .env           # secrets injected at RUNTIME, never baked into the image
+    environment:
+      - CHROMA_HOST=chroma   # <- the SERVICE NAME below, not an IP address
+      - CHROMA_PORT=8000     # <- chroma's INTERNAL port (not the published 8001)
+    depends_on:
+      - chroma
+    restart: unless-stopped  # if it does crash, Docker brings it back
+
+  chroma:
+    image: chromadb/chroma:0.6.3
+    container_name: scalergpt-chroma
+    ports:
+      - "8001:8000"          # published only so YOU can poke it from the Mac
+    volumes:
+      - chroma_data:/chroma/chroma   # the steel dabba - data survives container death
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

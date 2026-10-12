@@ -1,0 +1,5 @@
+fastapi==0.115.6
+uvicorn==0.34.0
+openai==1.59.7
+chromadb-client==0.6.3
+python-dotenv==1.0.1
