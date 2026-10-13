@@ -1,0 +1,31 @@
+services:
+  agent:
+    build: ./agent
+    container_name: deskbuddy-agent
+    ports:
+      - "9000:9000"                    # the ONLY public entrance
+    env_file: .env                     # the API key, injected at runtime
+    environment:
+      - TOOLS_URL=http://tools:7000    # service name, not an IP
+      - REDIS_HOST=redis               # service name, not an IP
+    depends_on:
+      - tools
+      - redis
+    restart: unless-stopped
+
+  tools:
+    build: ./tools
+    container_name: deskbuddy-tools
+    restart: unless-stopped
+    # NOTE: no ports! The outside world cannot reach this service at all.
+    # Only the agent (inside the same private network) can call tools:7000.
+
+  redis:
+    image: redis:7-alpine
+    container_name: deskbuddy-redis
+    volumes:
+      - agent_memory:/data             # conversation memory survives restarts
+    restart: unless-stopped
+
+volumes:
+  agent_memory:
