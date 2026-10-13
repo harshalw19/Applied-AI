@@ -12,14 +12,15 @@ import time
 import chromadb
 from chromadb.utils import embedding_functions
 
-API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 if not API_KEY or API_KEY.startswith("sk-paste"):
-    sys.exit("[ingest] OPENAI_API_KEY is missing. Put a real key in .env and recreate.")
+    sys.exit("[ingest] GROQ_API_KEY is missing. Put a real key in .env and recreate.")
 
-openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-    api_key=API_KEY,
-    model_name="text-embedding-3-small",
+openai_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    # api_key=API_KEY,
+    model_name="all-MiniLM-L6-v2",
 )
+
 
 host = os.getenv("CHROMA_HOST", "localhost")
 port = int(os.getenv("CHROMA_PORT", "8000"))

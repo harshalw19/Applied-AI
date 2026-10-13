@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+.git/
+.env
+*.ipynb
+eta_model.pkl
+data/raw/

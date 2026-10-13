@@ -27,11 +27,10 @@ if not API_KEY or API_KEY.startswith("sk-paste"):
         "       docker compose up -d --force-recreate\n"
     )
 
-llm = OpenAI(api_key=API_KEY)
+llm = OpenAI(api_key=API_KEY, base_url="https://api.groq.com/openai/v1", timeout=30)
 
-openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-    api_key=API_KEY,
-    model_name="text-embedding-3-small",
+openai_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2",
 )
 
 CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
@@ -101,7 +100,7 @@ def ask(q: Question):
 
     # 3. GENERATE - let the LLM write the final answer
     resp = llm.chat.completions.create(
-        model="gpt-4o-mini",
+        model="openai/gpt-oss-120b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": q.query},

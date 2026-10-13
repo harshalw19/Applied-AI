@@ -1,10 +1,10 @@
 services:
   app:
     build: .
-    container_name: scalergpt-app
+    container_name: learning-gpt-app
     ports:
       - "8000:8000"          # your Mac's 8000 -> app's 8000
-    env_file: .env           # secrets injected at RUNTIME, never baked into the image
+    env_file: ../.env           # secrets injected at RUNTIME, never baked into the image
     environment:
       - CHROMA_HOST=chroma   # <- the SERVICE NAME below, not an IP address
       - CHROMA_PORT=8000     # <- chroma's INTERNAL port (not the published 8001)
