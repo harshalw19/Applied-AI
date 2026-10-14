@@ -26,15 +26,15 @@ from pydantic import BaseModel
 app = FastAPI(title="DeskBuddy Agent")
 
 # --- Fail loudly and clearly if the key is missing --------------------------
-API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 if not API_KEY or API_KEY.startswith("sk-paste"):
     sys.exit(
-        "\n[DeskBuddy] OPENAI_API_KEY is missing.\n"
+        "\n[DeskBuddy] GROQ_API_KEY is missing.\n"
         "  Fix: cp .env.example .env, put your real key in it, then\n"
         "       docker compose up -d --force-recreate\n"
     )
 
-llm = OpenAI(api_key=API_KEY)
+llm = OpenAI(api_key=API_KEY, base_url="https://api.groq.com/openai/v1", timeout=30)
 
 # --- Service addresses: SERVICE NAMES, not IPs (Compose networking) ---------
 # redis-py connects lazily (only on first command), so no retry loop needed:
@@ -110,7 +110,7 @@ def chat(req: Chat):
     msg = None
     for _ in range(5):  # safety fuse: max 5 laps
         resp = llm.chat.completions.create(
-            model="gpt-4o-mini",
+            model="openai/gpt-oss-120b",
             messages=history,
             tools=TOOL_DEFS,
         )
