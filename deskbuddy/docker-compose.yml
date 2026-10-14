@@ -4,7 +4,7 @@ services:
     container_name: deskbuddy-agent
     ports:
       - "9000:9000"                    # the ONLY public entrance
-    env_file: .env                     # the API key, injected at runtime
+    env_file: ../.env                     # the API key, injected at runtime
     environment:
       - TOOLS_URL=http://tools:7000    # service name, not an IP
       - REDIS_HOST=redis               # service name, not an IP
